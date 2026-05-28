@@ -167,6 +167,55 @@
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast-icon { color: #3ddc84; margin-right: 10px; }
         .sep { max-width: 1200px; margin: 0 auto 60px; padding: 0 40px; height: 1px; background: rgba(255,255,255,0.07); }
+
+        /* LOGIN OVERLAY */
+        #login-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+            animation: overlayIn 0.25s ease;
+        }
+        .login-overlay-box {
+            background: #141414;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 48px 52px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.9);
+        }
+        .login-overlay-icon { font-size: 48px; margin-bottom: 20px; }
+        .login-overlay-box h3 {
+            font-family: 'Limelight', cursive;
+            font-size: 24px; margin-bottom: 12px;
+        }
+        .login-overlay-box p {
+            color: #888; font-size: 14px; line-height: 1.7; margin-bottom: 32px;
+        }
+        .login-overlay-btns { display: flex; gap: 12px; justify-content: center; }
+        .overlay-btn-primary {
+            background: #e63946; color: #fff; border: none;
+            padding: 13px 32px; border-radius: 12px;
+            font-size: 14px; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s;
+            text-decoration: none; display: inline-block;
+        }
+        .overlay-btn-primary:hover { background: #c1121f; }
+        .overlay-btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; padding: 13px 32px; border-radius: 12px;
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+        }
+        .overlay-btn-secondary:hover { border-color: #fff; }
     </style>
 </head>
 <body>
@@ -273,6 +322,20 @@
 
 <div class="toast" id="toast"><span class="toast-icon">✓</span><span id="toastMsg"></span></div>
 
+
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay">
+    <div class="login-overlay-box">
+        <div class="login-overlay-icon">🔒</div>
+        <h3>Zaloguj się</h3>
+        <p>Aby kupić bilety, musisz być zalogowany.<br>Dołącz do Rockhub i zarezerwuj swoje miejsce!</p>
+        <div class="login-overlay-btns">
+            <a href="projekt.html" class="overlay-btn-primary">Zaloguj się</a>
+            <button class="overlay-btn-secondary" onclick="document.getElementById('login-overlay').style.display='none'">Anuluj</button>
+        </div>
+    </div>
+</div>
+
 <script src="script.js"></script>
 <script>
 const concertData = [
@@ -344,13 +407,77 @@ function updateTotal() {
     document.getElementById('totalPrice').textContent = (price * qty) + ' zł';
 }
 
-function buyTicket() {
+async function buyTicket() {
+    // sprawdź sesję
+    let loggedIn = false;
+    let userEmail = '';
+    let userImie = '';
+    try {
+        const r = await fetch('session_check.php');
+        const d = await r.json();
+        loggedIn = d.logged_in;
+        if (d.logged_in) {
+            userEmail = d.user.email;
+            userImie  = d.user.imie;
+        }
+    } catch(e) {}
+
+    if (!loggedIn) {
+        // pokaż overlay z info o logowaniu
+        document.getElementById('login-overlay').style.display = 'flex';
+        return;
+    }
+
     const price = selectedZone === 'stojace' ? currentData.priceSto : currentData.priceSie;
     const zone  = selectedZone === 'stojace' ? 'stojące' : 'siedzące';
-    const t = document.getElementById('toast');
-    document.getElementById('toastMsg').textContent = qty + ' × bilet ' + zone + ' – ' + (price * qty) + ' zł dodane do koszyka!';
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3500);
+    const btn   = document.querySelector('.buy-btn');
+    btn.disabled = true;
+    btn.textContent = 'Przetwarzanie…';
+
+    try {
+        const res = await fetch('kup_bilet.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                event_id:   currentData.id,
+                event_name: currentData.title,
+                strefa:     selectedZone,
+                ilosc:      qty,
+                cena:       price,
+                miasto:     currentData.city,
+                data:       currentData.detailDate,
+                venue:      currentData.venue
+            })
+        });
+
+        // najpierw sprawdź tekst odpowiedzi
+        const rawText = await res.text();
+        let data;
+        try {
+            data = JSON.parse(rawText);
+        } catch(jsonErr) {
+            // PHP zwróciło błąd zamiast JSON – pokaż go
+            console.error('PHP error:', rawText);
+            alert('Błąd PHP:\n' + rawText.replace(/<[^>]+>/g, '').trim().substring(0, 300));
+            return;
+        }
+
+        if (data.success) {
+            const t = document.getElementById('toast');
+            t.style.borderColor = 'rgba(61,220,132,0.4)';
+            document.getElementById('toastMsg').textContent =
+                '✓ Kupiono ' + qty + ' × bilet ' + zone + '! Potwierdzenie wysłano na ' + userEmail;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 5000);
+        } else {
+            alert('Błąd: ' + data.message);
+        }
+    } catch(e) {
+        alert('Błąd połączenia z serwerem:\n' + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Kup teraz';
+    }
 }
 
 loadConcert();

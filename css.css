@@ -530,27 +530,72 @@ background-size: cover;
 #s4 {
 position: absolute;
 width: 100%;
-height: 1638px;
+height: 1500px;
 left: 0px;
 top: 1914px;
-background: #000000;
+background: #0a0a0a;
 }
 
 #galeria{
-    width: 80%;
-    height: 1000px;
-    display: inline;
-    object-fit: cover;
-    img {
-        width: calc(80%/3);
-        margin-left: 0px;
-        margin-top: 200px;
-        margin-inline-start: 170px;
-        background: linear-gradient(180deg, rgba(0, 0, 0, 0) 20%, #000000 80%);
-        border-radius: 20px;
-        box-shadow: 10px 10px color(#1F1D1D);
-        
-    }
+  background: #0a0a0a;
+  padding: 100px;
+  position: relative;
+  top: 0px;
+}
+
+.scroll {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 300px);
+  gap: 100px;
+  min-width: 600px;
+}
+
+#miejsce {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.zdj {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.75);
+  transform: scale(1);
+  transition: transform 0.45s ease, filter 0.45s ease;
+}
+
+.miejsce:hover .zdj { 
+    transform: scale(1.30);
+    filter: brightness(0.9); 
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient( to top, rgba(0, 0, 0, 1.00) 0%, transparent 50%);
+}
+
+.label {
+  position: absolute;
+  bottom: 50px;
+  left: 50px;
+  right: 50px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.gatunek, .cena {
+  color: #fff;
+  font-size: 30px;
+  font-weight: 600;
 }
 
 /* -- Footer -- */
@@ -560,6 +605,6 @@ position: absolute;
 width: 100%;
 height: 302px;
 left: 0px;
-top: 3552px;
+top: 3414px;
 background: #2D2D2D;
 }

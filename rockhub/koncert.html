@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rockhub – Koncert</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/css.css">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; color: #fff; font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+        .hero-img {
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: center 30%;
+            filter: brightness(0.45);
+        }
+        .hero-gradient {
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, transparent 30%, #0a0a0a 100%);
+        }
+        .hero-content {
+            position: absolute; bottom: 40px; left: 0; right: 0;
+            text-align: center;
+        }
+        .hero-title {
+            font-family: 'Limelight', cursive;
+            font-size: clamp(28px, 4vw, 58px);
+            letter-spacing: 3px;
+            text-shadow: 0 4px 24px rgba(0,0,0,0.8);
+            margin-bottom: 14px;
+        }
+        .hero-meta {
+            display: flex; justify-content: center; gap: 60px;
+            font-size: 17px; color: #bbb; letter-spacing: 1px;
+        }
+        .hero-meta span { display: flex; align-items: center; gap: 8px; }
+        .hero-meta span::before {
+            content: ''; display: inline-block;
+            width: 6px; height: 6px; border-radius: 50%; background: #e63946;
+        }
+        .back-btn {
+            position: absolute; top: 24px; left: 32px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; padding: 10px 22px; border-radius: 30px;
+            font-size: 13px; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; cursor: pointer;
+            font-family: 'Inter', sans-serif; text-decoration: none;
+            backdrop-filter: blur(8px); transition: background 0.3s; z-index: 10;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.15); }
+
+        /* INFO */
+        .info-section {
+            display: grid; grid-template-columns: 1fr 1px 1fr;
+            max-width: 1200px; margin: 60px auto; padding: 0 40px;
+        }
+        .divider-vertical { background: rgba(255,255,255,0.1); margin: 0 60px; }
+        .info-block h2 {
+            font-family: 'Limelight', cursive; font-size: 22px;
+            color: #e63946; margin-bottom: 20px; letter-spacing: 1px;
+        }
+        .info-block p { font-size: 15px; line-height: 1.85; color: #aaa; }
+        .detail-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #555; }
+        .detail-value { font-size: 15px; font-weight: 600; }
+
+        /* BILETY */
+        .ticket-section { max-width: 1200px; margin: 0 auto 80px; padding: 0 40px; }
+        .ticket-section h2 { font-family: 'Limelight', cursive; font-size: 28px; margin-bottom: 6px; }
+        .section-sub { color: #555; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 36px; }
+        .tickets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 36px; }
+        .ticket-card {
+            background: #141414; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px; padding: 32px 36px; position: relative;
+            overflow: hidden; transition: border-color 0.3s, transform 0.2s; cursor: pointer;
+        }
+        .ticket-card:hover { border-color: rgba(230,57,70,0.5); transform: translateY(-2px); }
+        .ticket-card.selected { border-color: #e63946; background: #1a0d0e; }
+        .ticket-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 4px; height: 100%; background: #e63946;
+            border-radius: 20px 0 0 20px;
+        }
+        .ticket-type { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: #e63946; margin-bottom: 10px; }
+        .ticket-name { font-family: 'Limelight', cursive; font-size: 24px; margin-bottom: 8px; }
+        .ticket-desc { font-size: 13px; color: #666; margin-bottom: 24px; line-height: 1.6; }
+        .ticket-price { font-size: 36px; font-weight: 700; }
+        .ticket-price span { font-size: 16px; font-weight: 400; color: #555; margin-left: 4px; }
+        .ticket-availability { position: absolute; top: 32px; right: 36px; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #3ddc84; }
+        .ticket-availability.low { color: #ffb703; }
+
+        .buy-row { display: flex; align-items: center; gap: 24px; margin-top: 8px; }
+        .qty-control {
+            display: flex; align-items: center;
+            background: #141414; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; overflow: hidden;
+        }
+        .qty-btn {
+            background: none; border: none; color: #fff;
+            font-size: 20px; width: 48px; height: 52px; cursor: pointer;
+            transition: background 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .qty-btn:hover { background: rgba(255,255,255,0.07); }
+        .qty-num {
+            width: 52px; text-align: center; font-size: 18px; font-weight: 600;
+            border-left: 1px solid rgba(255,255,255,0.08);
+            border-right: 1px solid rgba(255,255,255,0.08);
+            padding: 14px 0;
+        }
+        .buy-btn {
+            flex: 1; padding: 16px 32px; background: #e63946; color: #fff;
+            border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+            font-family: 'Inter', sans-serif; transition: background 0.25s, transform 0.15s;
+        }
+        .buy-btn:hover { background: #c1121f; }
+        .buy-btn:active { transform: scale(0.98); }
+        .total-price { font-size: 13px; color: #555; margin-top: 16px; }
+        .total-price strong { color: #fff; font-size: 18px; }
+
+        /* PODOBNE */
+        .similar-section {
+            background: #111; padding: 60px 0 80px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .similar-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+        .similar-inner h2 { font-family: 'Limelight', cursive; font-size: 28px; margin-bottom: 6px; }
+        .similar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+        .sim-card {
+            border-radius: 16px; overflow: hidden; position: relative;
+            height: 220px; cursor: pointer; transition: transform 0.3s;
+        }
+        .sim-card:hover { transform: translateY(-4px); }
+        .sim-card img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.6); transition: filter 0.3s, transform 0.4s;
+        }
+        .sim-card:hover img { filter: brightness(0.8); transform: scale(1.05); }
+        .sim-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%); }
+        .sim-info { position: absolute; bottom: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .sim-city { font-size: 13px; color: #aaa; }
+        .sim-date { font-size: 13px; color: #e63946; font-weight: 600; }
+
+        /* TOAST */
+        .toast {
+            position: fixed; bottom: 32px; right: 32px;
+            background: #1a1a1a; border: 1px solid rgba(230,57,70,0.4);
+            border-radius: 14px; padding: 18px 28px; font-size: 14px; color: #fff;
+            z-index: 9999; transform: translateY(100px); opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s;
+            pointer-events: none;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast-icon { color: #3ddc84; margin-right: 10px; }
+        .sep { max-width: 1200px; margin: 0 auto 60px; padding: 0 40px; height: 1px; background: rgba(255,255,255,0.07); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <input type="checkbox" id="log">
+    <label for="log" class="log-btn">Logowanie</label>
+    <div class="logowanie">
+        <div class="container">
+            <label class="close-btn" for="log"></label>
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="switchTab('login', this)">Logowanie</button>
+                <button class="tab-btn" onclick="switchTab('register', this)">Rejestracja</button>
+            </div>
+            <form class="auth-form active" id="form-login">
+                <div class="field"><label>Email</label><input type="email" placeholder="twoj@email.com" required></div>
+                <div class="field"><label>Hasło</label><input type="password" placeholder="••••••••" required></div>
+                <button type="submit" class="submit-btn">Zaloguj się</button>
+                <div class="switch-link">Nie masz konta? <span onclick="switchTab('register', null)">Zarejestruj się</span></div>
+            </form>
+            <form class="auth-form" id="form-register">
+                <div class="field"><label>Imię</label><input type="text" placeholder="Jan Kowalski" required></div>
+                <div class="field"><label>Email</label><input type="email" placeholder="twoj@email.com" required></div>
+                <div class="field"><label>Hasło</label><input type="password" placeholder="••••••••" required></div>
+                <div class="field"><label>Powtórz hasło</label><input type="password" placeholder="••••••••" required></div>
+                <button type="submit" class="submit-btn">Zarejestruj się</button>
+                <div class="switch-link">Masz już konto? <span onclick="switchTab('login', null)">Zaloguj się</span></div>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <img class="hero-img" id="heroImg" src="./assets/photos/slipknot.webp" alt="Koncert">
+    <div class="hero-gradient"></div>
+    <a class="back-btn" href="projekt.html">&#8592; Wróć</a>
+    <div class="hero-content">
+        <h1 class="hero-title" id="heroTitle">Slipknot – Here Comes the Pain Tour</h1>
+        <div class="hero-meta">
+            <span id="heroCity">Warszawa</span>
+            <span id="heroDate">15.08.2025</span>
+            <span id="heroVenue">PGE Narodowy</span>
+        </div>
+    </div>
+</section>
+
+<div class="info-section">
+    <div class="info-block">
+        <h2>O zespole</h2>
+        <p id="bandDesc">Legenda heavy metalu, która od ponad 30 lat wyznacza standardy brutalności i technicznego mistrzostwa. Ich koncerty to widowiska na skalę światową – spektakularne efekty świetlne, ogień i niepowtarzalna energia tłumu.</p>
+    </div>
+    <div class="divider-vertical"></div>
+    <div class="info-block">
+        <h2>Szczegóły wydarzenia</h2>
+        <div>
+            <div class="detail-row"><span class="detail-label">Data</span><span class="detail-value" id="detailDate">15 sierpnia 2025, 20:00</span></div>
+            <div class="detail-row"><span class="detail-label">Miejsce</span><span class="detail-value" id="detailVenue">PGE Narodowy, Warszawa</span></div>
+            <div class="detail-row"><span class="detail-label">Gatunek</span><span class="detail-value" id="detailGenre">Heavy Metal / Nu-Metal</span></div>
+            <div class="detail-row"><span class="detail-label">Wiek</span><span class="detail-value">16+</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="sep"></div>
+
+<section class="ticket-section">
+    <p class="section-sub">Wybierz kategorię</p>
+    <h2>Kup bilety</h2>
+    <p class="section-sub" style="margin-top:4px;">Bezpieczna płatność · Instant e-ticket</p>
+    <div class="tickets-grid">
+        <div class="ticket-card" id="card-stojace" onclick="selectTicket('stojace')">
+            <span class="ticket-type">Strefa</span>
+            <div class="ticket-name">Stojące</div>
+            <div class="ticket-desc">Pełny dostęp do strefy przed sceną.<br>Wejście od godziny 18:00.</div>
+            <div class="ticket-price" id="price-stojace">249 <span>zł / szt.</span></div>
+            <span class="ticket-availability">Dostępne</span>
+        </div>
+        <div class="ticket-card" id="card-siedzace" onclick="selectTicket('siedzace')">
+            <span class="ticket-type">Strefa</span>
+            <div class="ticket-name">Siedzące</div>
+            <div class="ticket-desc">Numerowane miejsca siedzące.<br>Doskonała widoczność sceny.</div>
+            <div class="ticket-price" id="price-siedzace">399 <span>zł / szt.</span></div>
+            <span class="ticket-availability low">Ostatnie miejsca</span>
+        </div>
+    </div>
+    <div class="buy-row">
+        <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <div class="qty-num" id="qtyNum">1</div>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+        <button class="buy-btn" onclick="buyTicket()">Kup teraz</button>
+    </div>
+    <p class="total-price">Łącznie: <strong id="totalPrice">249 zł</strong></p>
+</section>
+
+<section class="similar-section">
+    <div class="similar-inner">
+        <p class="section-sub">Może cię zainteresować</p>
+        <h2>Podobne koncerty</h2>
+        <div class="similar-grid" id="similarGrid"></div>
+    </div>
+</section>
+
+<div class="toast" id="toast"><span class="toast-icon">✓</span><span id="toastMsg"></span></div>
+
+<script src="script.js"></script>
+<script>
+const concertData = [
+    { id:1, title:'Slipknot – Here Comes the Pain Tour', img:'./assets/photos/slipknot.webp', city:'Warszawa', date:'15.08.2025', venue:'PGE Narodowy', desc:'Legenda heavy metalu, która od ponad 30 lat wyznacza standardy brutalności i technicznego mistrzostwa. Ich koncerty to widowiska na skalę światową – spektakularne efekty świetlne, ogień i niepowtarzalna energia tłumu.', detailDate:'15 sierpnia 2025, 20:00', detailVenue:'PGE Narodowy, Warszawa', genre:'Heavy Metal / Nu-Metal', priceSto:249, priceSie:399 },
+    { id:2, title:'Korn – Follow the Leader Tour', img:'./assets/photos/korn.webp', city:'Kraków', date:'03.09.2025', venue:'Tauron Arena', desc:'Pionierzy nu-metalu powracają z epokową trasą nawiązującą do kultowej płyty. Groźne riffy, basowe tąpnięcia i hipnotyzujące sample – wieczór, którego nie da się zapomnieć.', detailDate:'3 września 2025, 19:30', detailVenue:'Tauron Arena, Kraków', genre:'Nu-Metal', priceSto:199, priceSie:299 },
+    { id:3, title:"Guns N' Roses – Appetite for Destruction", img:'./assets/photos/guns.webp', city:'Gdańsk', date:'11.10.2025', venue:'Ergo Arena', desc:'Axl Rose i Slash znowu razem na jednej scenie. Klasyki hard rocka, pirotechnika i legendarny feeling lat 80-tych – wszystko w jednym spektakularnym show.', detailDate:'11 października 2025, 20:00', detailVenue:'Ergo Arena, Gdańsk', genre:'Hard Rock / Heavy Metal', priceSto:299, priceSie:449 },
+    { id:4, title:'Bring Me The Horizon – POST HUMAN Tour', img:'./assets/photos/bmth.webp', city:'Wrocław', date:'20.07.2025', venue:'Hala Stulecia', desc:"Sheffieldowy metalcore, który stał się globalnym zjawiskiem. BMTH łączy ciężar, elektronikę i emocje w jednym potężnym widowisku.", detailDate:'20 lipca 2025, 19:00', detailVenue:'Hala Stulecia, Wrocław', genre:'Metalcore / Post-Hardcore', priceSto:179, priceSie:259 },
+];
+
+let currentData = concertData[0];
+let selectedZone = 'stojace';
+let qty = 1;
+
+function loadConcert() {
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get('id')) || 1;
+    currentData = concertData.find(c => c.id === id) || concertData[0];
+
+    document.getElementById('heroImg').src = currentData.img;
+    document.getElementById('heroTitle').textContent = currentData.title;
+    document.getElementById('heroCity').textContent = currentData.city;
+    document.getElementById('heroDate').textContent = currentData.date;
+    document.getElementById('heroVenue').textContent = currentData.venue;
+    document.getElementById('bandDesc').textContent = currentData.desc;
+    document.getElementById('detailDate').textContent = currentData.detailDate;
+    document.getElementById('detailVenue').textContent = currentData.detailVenue;
+    document.getElementById('detailGenre').textContent = currentData.genre;
+    document.getElementById('price-stojace').innerHTML = currentData.priceSto + ' <span>zł / szt.</span>';
+    document.getElementById('price-siedzace').innerHTML = currentData.priceSie + ' <span>zł / szt.</span>';
+    document.title = 'Rockhub – ' + currentData.title;
+
+    // podobne – wszystkie poza aktualnym
+    const grid = document.getElementById('similarGrid');
+    grid.innerHTML = '';
+    concertData.filter(c => c.id !== currentData.id).forEach(c => {
+        grid.innerHTML += `
+        <div class="sim-card" onclick="window.location.href='koncert.html?id=${c.id}'">
+            <img src="${c.img}" alt="${c.title}">
+            <div class="sim-overlay"></div>
+            <div class="sim-info">
+                <div>
+                    <div style="font-family:'Limelight',cursive;font-size:16px;margin-bottom:4px;">${c.title.split('–')[0].trim()}</div>
+                    <div class="sim-city">${c.city}</div>
+                </div>
+                <div class="sim-date">${c.date}</div>
+            </div>
+        </div>`;
+    });
+
+    selectTicket('stojace');
+    updateTotal();
+}
+
+function selectTicket(zone) {
+    selectedZone = zone;
+    document.getElementById('card-stojace').classList.toggle('selected', zone === 'stojace');
+    document.getElementById('card-siedzace').classList.toggle('selected', zone === 'siedzace');
+    updateTotal();
+}
+
+function changeQty(delta) {
+    qty = Math.max(1, Math.min(10, qty + delta));
+    document.getElementById('qtyNum').textContent = qty;
+    updateTotal();
+}
+
+function updateTotal() {
+    const price = selectedZone === 'stojace' ? currentData.priceSto : currentData.priceSie;
+    document.getElementById('totalPrice').textContent = (price * qty) + ' zł';
+}
+
+function buyTicket() {
+    const price = selectedZone === 'stojace' ? currentData.priceSto : currentData.priceSie;
+    const zone  = selectedZone === 'stojace' ? 'stojące' : 'siedzące';
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = qty + ' × bilet ' + zone + ' – ' + (price * qty) + ' zł dodane do koszyka!';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+loadConcert();
+</script>
+</body>
+</html>

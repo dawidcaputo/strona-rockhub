@@ -608,3 +608,50 @@ left: 0px;
 top: 3414px;
 background: #2D2D2D;
 }
+/* ── LAZY LOAD FADE-IN ── */
+.zdj {
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.45s ease, filter 0.45s ease;
+}
+.zdj.loaded {
+  opacity: 1;
+}
+/* ── NAV: zalogowany użytkownik ── */
+.nav-user-info {
+    position: absolute;
+    right: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.nav-username {
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.nav-logout-btn {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 8px 28px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.nav-logout-btn:hover {
+    background: #fff;
+    border-color: #fff;
+    color: #000;
+}

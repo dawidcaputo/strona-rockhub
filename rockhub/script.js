@@ -237,3 +237,58 @@ function handleLogout() {
     const btn = document.querySelector('.log-btn');
     if (btn) btn.style.display = 'block';
 }
+// ============================================================
+//  SIATKA – ładowanie eventów z bazy
+// ============================================================
+async function loadGrid() {
+    const grid = document.querySelector('.grid');
+    if (!grid) return;
+
+    try {
+        const res  = await fetch('pobierz_eventy.php');
+        const data = await res.json();
+        if (!data.success || !data.eventy.length) return;
+
+        grid.innerHTML = '';
+
+        data.eventy.forEach(ev => {
+            const div = document.createElement('div');
+            div.id = 'miejsce';
+            div.style.cursor = 'pointer';
+            div.onclick = () => window.location.href = 'koncert.html?id=' + ev.id;
+
+            div.innerHTML = `
+                <img data-src="${ev.plakat_url}" class="zdj" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                <div class="overlay"></div>
+                <div class="label">
+                    <span class="gatunek">${ev.gatunek}</span>
+                    <span class="cena">${Math.round(ev.cena_stojace)}zł</span>
+                </div>
+            `;
+            grid.appendChild(div);
+        });
+
+        // lazy load nowych obrazków
+        const lazyImgs = grid.querySelectorAll('img[data-src]');
+        if ('IntersectionObserver' in window) {
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        const img = e.target;
+                        img.src = img.dataset.src;
+                        img.addEventListener('load', () => img.classList.add('loaded'));
+                        obs.unobserve(img);
+                    }
+                });
+            }, { rootMargin: '100px' });
+            lazyImgs.forEach(img => obs.observe(img));
+        } else {
+            lazyImgs.forEach(img => { img.src = img.dataset.src; img.classList.add('loaded'); });
+        }
+
+    } catch(e) {
+        console.error('Błąd ładowania siatki:', e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadGrid);

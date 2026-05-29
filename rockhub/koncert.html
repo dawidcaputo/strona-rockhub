@@ -167,55 +167,6 @@
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast-icon { color: #3ddc84; margin-right: 10px; }
         .sep { max-width: 1200px; margin: 0 auto 60px; padding: 0 40px; height: 1px; background: rgba(255,255,255,0.07); }
-
-        /* LOGIN OVERLAY */
-        #login-overlay {
-            display: none;
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.85);
-            z-index: 9998;
-            align-items: center;
-            justify-content: center;
-            animation: overlayIn 0.25s ease;
-        }
-        .login-overlay-box {
-            background: #141414;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px;
-            padding: 48px 52px;
-            text-align: center;
-            max-width: 420px;
-            width: 90%;
-            box-shadow: 0 24px 80px rgba(0,0,0,0.9);
-        }
-        .login-overlay-icon { font-size: 48px; margin-bottom: 20px; }
-        .login-overlay-box h3 {
-            font-family: 'Limelight', cursive;
-            font-size: 24px; margin-bottom: 12px;
-        }
-        .login-overlay-box p {
-            color: #888; font-size: 14px; line-height: 1.7; margin-bottom: 32px;
-        }
-        .login-overlay-btns { display: flex; gap: 12px; justify-content: center; }
-        .overlay-btn-primary {
-            background: #e63946; color: #fff; border: none;
-            padding: 13px 32px; border-radius: 12px;
-            font-size: 14px; font-weight: 700; letter-spacing: 1px;
-            text-transform: uppercase; cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: background 0.2s;
-            text-decoration: none; display: inline-block;
-        }
-        .overlay-btn-primary:hover { background: #c1121f; }
-        .overlay-btn-secondary {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; padding: 13px 32px; border-radius: 12px;
-            font-size: 14px; font-weight: 600; cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: border-color 0.2s;
-        }
-        .overlay-btn-secondary:hover { border-color: #fff; }
     </style>
 </head>
 <body>
@@ -322,27 +273,22 @@
 
 <div class="toast" id="toast"><span class="toast-icon">✓</span><span id="toastMsg"></span></div>
 
-
-<!-- LOGIN OVERLAY -->
-<div id="login-overlay">
-    <div class="login-overlay-box">
-        <div class="login-overlay-icon">🔒</div>
-        <h3>Zaloguj się</h3>
-        <p>Aby kupić bilety, musisz być zalogowany.<br>Dołącz do Rockhub i zarezerwuj swoje miejsce!</p>
-        <div class="login-overlay-btns">
-            <a href="projekt.html" class="overlay-btn-primary">Zaloguj się</a>
-            <button class="overlay-btn-secondary" onclick="document.getElementById('login-overlay').style.display='none'">Anuluj</button>
-        </div>
-    </div>
-</div>
-
 <script src="script.js"></script>
 <script>
 const concertData = [
-    { id:1, title:'Slipknot – Here Comes the Pain Tour', img:'./assets/photos/slipknot.webp', city:'Warszawa', date:'15.08.2025', venue:'PGE Narodowy', desc:'Legenda heavy metalu, która od ponad 30 lat wyznacza standardy brutalności i technicznego mistrzostwa. Ich koncerty to widowiska na skalę światową – spektakularne efekty świetlne, ogień i niepowtarzalna energia tłumu.', detailDate:'15 sierpnia 2025, 20:00', detailVenue:'PGE Narodowy, Warszawa', genre:'Heavy Metal / Nu-Metal', priceSto:249, priceSie:399 },
-    { id:2, title:'Korn – Follow the Leader Tour', img:'./assets/photos/korn.webp', city:'Kraków', date:'03.09.2025', venue:'Tauron Arena', desc:'Pionierzy nu-metalu powracają z epokową trasą nawiązującą do kultowej płyty. Groźne riffy, basowe tąpnięcia i hipnotyzujące sample – wieczór, którego nie da się zapomnieć.', detailDate:'3 września 2025, 19:30', detailVenue:'Tauron Arena, Kraków', genre:'Nu-Metal', priceSto:199, priceSie:299 },
-    { id:3, title:"Guns N' Roses – Appetite for Destruction", img:'./assets/photos/guns.webp', city:'Gdańsk', date:'11.10.2025', venue:'Ergo Arena', desc:'Axl Rose i Slash znowu razem na jednej scenie. Klasyki hard rocka, pirotechnika i legendarny feeling lat 80-tych – wszystko w jednym spektakularnym show.', detailDate:'11 października 2025, 20:00', detailVenue:'Ergo Arena, Gdańsk', genre:'Hard Rock / Heavy Metal', priceSto:299, priceSie:449 },
-    { id:4, title:'Bring Me The Horizon – POST HUMAN Tour', img:'./assets/photos/bmth.webp', city:'Wrocław', date:'20.07.2025', venue:'Hala Stulecia', desc:"Sheffieldowy metalcore, który stał się globalnym zjawiskiem. BMTH łączy ciężar, elektronikę i emocje w jednym potężnym widowisku.", detailDate:'20 lipca 2025, 19:00', detailVenue:'Hala Stulecia, Wrocław', genre:'Metalcore / Post-Hardcore', priceSto:179, priceSie:259 },
+    { id:1,  title:'Slipknot – Here Comes The Pain Tour',      img:'./assets/photos/slipknot.webp', city:'Krakow',   date:'15.08.2025', venue:'Tauron Arena',   desc:'Kultowy 9-osobowy team ze stanu Iowa. Maski, intensywna perkusja i chaos – jeden z najbardziej spektakularnych shows na swiecie.',                         detailDate:'15 sierpnia 2025, 20:00',    detailVenue:'Tauron Arena, Krakow',   genre:'Nu-Metal',             priceSto:199, priceSie:349 },
+    { id:2,  title:'Korn – Requiem Tour',                       img:'./assets/photos/korn.webp',     city:'Warszawa', date:'10.09.2025', venue:'PGE Narodowy',   desc:'Pionierzy nu-metalu z Bakersfield. Jonathan Davis i spolka wracaja z nu-metalowa rewia pelna kultowych hitow.',                                                detailDate:'10 wrzesnia 2025, 20:00',    detailVenue:'PGE Narodowy, Warszawa', genre:'Nu-Metal',             priceSto:179, priceSie:299 },
+    { id:3,  title:'Guns N Roses – Hard Skool Tour',            img:'./assets/photos/guns.webp',     city:'Wroclaw',  date:'05.10.2025', venue:'Hala Stulecia',  desc:'Slash, Axl i Duff – legendarna trojka z LA. Klasyki hard rocka, pirotechnika i niepowtarzalny feeling lat 80-tych.',                                          detailDate:'5 pazdziernika 2025, 19:30', detailVenue:'Hala Stulecia, Wroclaw', genre:'Hard Rock',            priceSto:249, priceSie:399 },
+    { id:4,  title:'Bring Me The Horizon – POST HUMAN Tour',    img:'./assets/photos/bmth.webp',     city:'Lodz',     date:'20.11.2025', venue:'Atlas Arena',    desc:'Sheffieldowi mistrzowie metalcore. Oli Sykes laczy ciezar, elektronike i emocje w jednym poteznym widowisku.',                                              detailDate:'20 listopada 2025, 20:00',   detailVenue:'Atlas Arena, Lodz',      genre:'Metalcore',            priceSto:169, priceSie:279 },
+    { id:5,  title:'Linkin Park – From Zero World Tour',        img:'./assets/photos/zdj1.webp',     city:'Gdansk',   date:'18.07.2025', venue:'Ergo Arena',     desc:'Jedna z najwazniejszych kapel lat 2000. Polaczenie metalu i hip-hopu, ktore zmienilo oblicze muzyki. Chester zyje w kazdym rifie i kazdym krzyku.',        detailDate:'18 lipca 2025, 20:00',       detailVenue:'Ergo Arena, Gdansk',     genre:'Nu-Metal / Alt-Rock',  priceSto:189, priceSie:319 },
+    { id:6,  title:'System Of A Down – Mezmerize Tour',         img:'./assets/photos/zdj2.webp',     city:'Katowice', date:'22.08.2025', venue:'Spodek',         desc:'Armensko-amerykanski kwartet z politycznym przekazem i dzikim brzmieniem. B.Y.O.B., Chop Suey i Toxicity na zywo – nikt tego nie zapomni.',              detailDate:'22 sierpnia 2025, 19:00',    detailVenue:'Spodek, Katowice',       genre:'Nu-Metal',             priceSto:169, priceSie:299 },
+    { id:7,  title:'Rage Against The Machine – Reunion Tour',   img:'./assets/photos/zdj3.webp',     city:'Warszawa', date:'03.09.2025', venue:'Klub Stodola',   desc:'Rewolucyjny metal wraca na scene po latach nieobecnosci. Tom Morello i Zack de la Rocha – muzyczny gniew w najczystszej postaci.',                      detailDate:'3 wrzesnia 2025, 20:00',     detailVenue:'Klub Stodola, Warszawa', genre:'Alt-Metal / Rap-Metal', priceSto:219, priceSie:359 },
+    { id:8,  title:'Limp Bizkit – Still Sucks Tour',            img:'./assets/photos/zdj4.webp',     city:'Warszawa', date:'25.09.2025', venue:'Proxima',        desc:'Fred Durst udowadnia ze Nookie nadal rzadzi. Nu-metal, hip-hop i szalenstwo sceniczne – wieczor pelen nostalgii i energii.',                              detailDate:'25 wrzesnia 2025, 21:00',    detailVenue:'Proxima, Warszawa',      genre:'Nu-Metal',             priceSto:149, priceSie:249 },
+    { id:9,  title:'Disturbed – Take Back Your Life Tour',      img:'./assets/photos/zdj5.webp',     city:'Gdansk',   date:'14.10.2025', venue:'B90',            desc:'David Draiman i jego mocarny wokal. The Sound of Silence, Down with the Sickness – ciarki gwarantowane od pierwszego taktu.',                             detailDate:'14 pazdziernika 2025, 21:00',detailVenue:'B90, Gdansk',            genre:'Heavy Metal',          priceSto:159, priceSie:269 },
+    { id:10, title:'Avenged Sevenfold – Life Is But A Dream',   img:'./assets/photos/zdj6.webp',     city:'Krakow',   date:'30.10.2025', venue:'Tauron Arena',   desc:'Californijska kapela laczaca heavy metal z progressivem. M. Shadows i Synyster Gates tworza muzyczne widowisko na najwyzszym poziomie.',                detailDate:'30 pazdziernika 2025, 20:00',detailVenue:'Tauron Arena, Krakow',   genre:'Heavy Metal',          priceSto:169, priceSie:289 },
+    { id:11, title:'Metallica – M72 World Tour',                img:'./assets/photos/zdj7.webp',     city:'Warszawa', date:'08.11.2025', venue:'PGE Narodowy',   desc:'Legenda heavy metalu z San Francisco. Ponad 40 lat na scenie, sprzedane miliony plyt i koncerty ktore sa wydarzeniami historycznymi.',                  detailDate:'8 listopada 2025, 20:00',    detailVenue:'PGE Narodowy, Warszawa', genre:'Heavy Metal / Thrash', priceSto:299, priceSie:499 },
+    { id:12, title:'Green Day – Saviors Tour',                  img:'./assets/photos/zdj8.webp',     city:'Wroclaw',  date:'15.11.2025', venue:'Hala Stulecia',  desc:'Billie Joe Armstrong i punk rock ktory zmienil pokolenie. American Idiot, Boulevard of Broken Dreams – hymny brzmiace tak swiezo jak 20 lat temu.',      detailDate:'15 listopada 2025, 19:30',   detailVenue:'Hala Stulecia, Wroclaw', genre:'Punk Rock',            priceSto:149, priceSie:249 },
+    { id:13, title:'Foo Fighters – But Here We Are Tour',       img:'./assets/photos/zdj9.webp',     city:'Lodz',     date:'06.12.2025', venue:'Atlas Arena',    desc:'Dave Grohl i ekipa udowadniaja ze rock nigdy nie umiera. Everlong, Best of You i dziesieci innych hymnow – wieczor pelen emocji i energii.',           detailDate:'6 grudnia 2025, 20:00',      detailVenue:'Atlas Arena, Lodz',      genre:'Alt-Rock / Grunge',    priceSto:169, priceSie:279 },
 ];
 
 let currentData = concertData[0];
@@ -407,77 +353,13 @@ function updateTotal() {
     document.getElementById('totalPrice').textContent = (price * qty) + ' zł';
 }
 
-async function buyTicket() {
-    // sprawdź sesję
-    let loggedIn = false;
-    let userEmail = '';
-    let userImie = '';
-    try {
-        const r = await fetch('session_check.php');
-        const d = await r.json();
-        loggedIn = d.logged_in;
-        if (d.logged_in) {
-            userEmail = d.user.email;
-            userImie  = d.user.imie;
-        }
-    } catch(e) {}
-
-    if (!loggedIn) {
-        // pokaż overlay z info o logowaniu
-        document.getElementById('login-overlay').style.display = 'flex';
-        return;
-    }
-
+function buyTicket() {
     const price = selectedZone === 'stojace' ? currentData.priceSto : currentData.priceSie;
     const zone  = selectedZone === 'stojace' ? 'stojące' : 'siedzące';
-    const btn   = document.querySelector('.buy-btn');
-    btn.disabled = true;
-    btn.textContent = 'Przetwarzanie…';
-
-    try {
-        const res = await fetch('kup_bilet.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                event_id:   currentData.id,
-                event_name: currentData.title,
-                strefa:     selectedZone,
-                ilosc:      qty,
-                cena:       price,
-                miasto:     currentData.city,
-                data:       currentData.detailDate,
-                venue:      currentData.venue
-            })
-        });
-
-        // najpierw sprawdź tekst odpowiedzi
-        const rawText = await res.text();
-        let data;
-        try {
-            data = JSON.parse(rawText);
-        } catch(jsonErr) {
-            // PHP zwróciło błąd zamiast JSON – pokaż go
-            console.error('PHP error:', rawText);
-            alert('Błąd PHP:\n' + rawText.replace(/<[^>]+>/g, '').trim().substring(0, 300));
-            return;
-        }
-
-        if (data.success) {
-            const t = document.getElementById('toast');
-            t.style.borderColor = 'rgba(61,220,132,0.4)';
-            document.getElementById('toastMsg').textContent =
-                '✓ Kupiono ' + qty + ' × bilet ' + zone + '! Potwierdzenie wysłano na ' + userEmail;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 5000);
-        } else {
-            alert('Błąd: ' + data.message);
-        }
-    } catch(e) {
-        alert('Błąd połączenia z serwerem:\n' + e.message);
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'Kup teraz';
-    }
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = qty + ' × bilet ' + zone + ' – ' + (price * qty) + ' zł dodane do koszyka!';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
 }
 
 loadConcert();

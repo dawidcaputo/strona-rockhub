@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rockhub – Wyniki wyszukiwania</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/css.css">
+    <style>
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        body { background:#0a0a0a; color:#fff; font-family:'Inter',sans-serif; min-height:100vh; }
+
+        /* ── HERO BANNER ── */
+        .results-hero {
+            margin-top: 80px;
+            height: 220px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, #0a0a0a 100%),
+                        url('./assets/photos/sec123.webp') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 60px 36px;
+        }
+
+        .results-hero h1 {
+            font-family: 'Limelight', cursive;
+            font-size: 42px;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .results-hero p {
+            color: #666;
+            font-size: 12px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+
+        /* ── PASEK WYSZUKIWANIA NA STRONIE WYNIKÓW ── */
+        .search-bar-top {
+            background: #111;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            padding: 20px 60px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-bar-top input[type="search"],
+        .search-bar-top select,
+        .search-bar-top input[type="date"] {
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            padding: 12px 18px;
+            outline: none;
+            transition: border-color 0.25s;
+        }
+
+        .search-bar-top input[type="search"] { flex: 1; min-width: 200px; }
+        .search-bar-top select, .search-bar-top input[type="date"] { width: 180px; }
+
+        .search-bar-top input:focus,
+        .search-bar-top select:focus { border-color: rgba(230,57,70,0.6); }
+
+        .search-bar-top select option { background: #1a1a1a; }
+
+        .search-btn-top {
+            background: #e63946;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 32px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .search-btn-top:hover { background: #c1121f; }
+
+        .back-link {
+            color: #555;
+            text-decoration: none;
+            font-size: 13px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: #fff; }
+
+        /* ── WYNIKI ── */
+        .results-body {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 48px 60px 80px;
+        }
+
+        .results-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+        }
+
+        .results-meta h2 {
+            font-family: 'Limelight', cursive;
+            font-size: 22px;
+            color: #fff;
+        }
+
+        .results-meta .count {
+            font-size: 12px;
+            color: #555;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        /* ── KARTA ── */
+        .result-card {
+            background: #141414;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 18px;
+            overflow: hidden;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.3s, transform 0.25s, box-shadow 0.3s;
+        }
+
+        .result-card:hover {
+            border-color: rgba(230,57,70,0.55);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+        }
+
+        .card-img-wrap {
+            overflow: hidden;
+            height: 200px;
+            flex-shrink: 0;
+        }
+
+        .card-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.72);
+            transition: filter 0.35s, transform 0.45s;
+            display: block;
+        }
+
+        .result-card:hover .card-img {
+            filter: brightness(0.88);
+            transform: scale(1.06);
+        }
+
+        .card-body {
+            padding: 22px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .card-genre {
+            font-size: 10px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #e63946;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .card-title {
+            font-family: 'Limelight', cursive;
+            font-size: 18px;
+            line-height: 1.35;
+            margin-bottom: 14px;
+            flex: 1;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 18px;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .card-meta span { display:flex; align-items:center; gap:5px; }
+
+        .card-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            padding-top: 14px;
+        }
+
+        .card-price small {
+            font-size: 12px;
+            color: #555;
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        /* ── STANY ── */
+        .state-box {
+            text-align: center;
+            padding: 80px 0;
+            color: #444;
+        }
+
+        .state-box .icon { font-size: 52px; margin-bottom: 20px; display:block; }
+        .state-box p { font-size: 16px; line-height: 1.7; }
+        .state-box strong { color: #fff; }
+
+        .spinner {
+            width: 36px; height: 36px;
+            border: 3px solid #222; border-top-color: #e63946;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── FOOTER ── */
+        footer {
+            background: #161616;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            padding: 50px 60px 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr 1fr;
+            gap: 60px;
+            padding-bottom: 40px;
+        }
+
+        .footer-brand .logo {
+            font-family: 'Limelight', cursive;
+            font-size: 22px;
+            color: #fff;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand .logo::before {
+            content: '🎸';
+            font-size: 20px;
+        }
+
+        .footer-brand p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.75;
+            max-width: 280px;
+        }
+
+        .footer-col h4 {
+            font-size: 11px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .footer-col ul { list-style: none; }
+
+        .footer-col ul li {
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-col ul li a {
+            color: #888;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-col ul li a:hover { color: #fff; }
+
+        .social-icon {
+            width: 26px; height: 26px;
+            background: #222;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 18px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #333;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <input type="checkbox" id="log">
+    <label for="log" class="log-btn">Logowanie</label>
+    <div class="logowanie">
+        <div class="container">
+            <label class="close-btn" for="log"></label>
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="switchTab('login', this)">Logowanie</button>
+                <button class="tab-btn" onclick="switchTab('register', this)">Rejestracja</button>
+            </div>
+            <form class="auth-form active" id="form-login">
+                <div class="field"><label>Email</label><input type="email" placeholder="twoj@email.com" required></div>
+                <div class="field"><label>Hasło</label><input type="password" placeholder="••••••••" required></div>
+                <button type="submit" class="submit-btn">Zaloguj się</button>
+                <div class="switch-link">Nie masz konta? <span onclick="switchTab('register', null)">Zarejestruj się</span></div>
+            </form>
+            <form class="auth-form" id="form-register">
+                <div class="field"><label>Imię</label><input type="text" placeholder="Jan Kowalski" required></div>
+                <div class="field"><label>Email</label><input type="email" placeholder="twoj@email.com" required></div>
+                <div class="field"><label>Hasło</label><input type="password" placeholder="••••••••" required></div>
+                <div class="field"><label>Powtórz hasło</label><input type="password" placeholder="••••••••" required></div>
+                <button type="submit" class="submit-btn">Zarejestruj się</button>
+                <div class="switch-link">Masz już konto? <span onclick="switchTab('login', null)">Zaloguj się</span></div>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="results-hero">
+    <h1>Wyniki wyszukiwania</h1>
+    <p id="hero-sub">Ładowanie…</p>
+</div>
+
+<!-- PASEK WYSZUKIWANIA -->
+<div class="search-bar-top">
+    <a class="back-link" href="projekt.html">&#8592; Strona główna</a>
+    <input type="search" id="q-input" placeholder="Czego szukasz?" autocomplete="off">
+    <select id="miasto-input">
+        <option value="">Wszystkie miasta</option>
+        <option>Kraków</option>
+        <option>Warszawa</option>
+        <option>Wrocław</option>
+        <option>Łódź</option>
+        <option>Gdańsk</option>
+        <option>Poznań</option>
+        <option>Katowice</option>
+        <option>Szczecin</option>
+    </select>
+    <input type="date" id="data-input">
+    <button class="search-btn-top" onclick="doSearch()">🔍 Szukaj</button>
+</div>
+
+<!-- WYNIKI -->
+<div class="results-body">
+    <div class="results-meta">
+        <div>
+            <h2>Koncerty</h2>
+            <p class="count" id="results-count"></p>
+        </div>
+    </div>
+    <div id="results-container">
+        <div class="state-box"><div class="spinner"></div><p>Wyszukuję koncerty…</p></div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <div class="logo">Rockhub</div>
+            <p>Twoje bilety, Twoja muzyka. Znajdź i kup bilety na koncerty w pobliżu – w kilka sekund.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Social media</h4>
+            <ul>
+                <li><span class="social-icon">📷</span><a href="#">RockHub</a></li>
+                <li><span class="social-icon">📘</span><a href="#">RockHubKoncerty</a></li>
+                <li><span class="social-icon">🎵</span><a href="#">RockHub</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Kontakt</h4>
+            <ul>
+                <li><span class="social-icon">📞</span> 676 991 168</li>
+                <li><span class="social-icon">✉️</span> RockHuB@gmail.com</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>ROCKHUB &bull; ticketstobbhell &bull; bbhel &bull; Jakub Just &bull; Dawid Eisen</span>
+        <span>© 2025 Rockhub. Wszelkie prawa zastrzeżone.</span>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+const fallback = './assets/photos/slipknot.webp';
+
+// ── wczytaj parametry z URL i uruchom szukanie ──
+window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const q      = params.get('q')      || '';
+    const miasto = params.get('miasto') || '';
+    const data   = params.get('data')   || '';
+
+    document.getElementById('q-input').value      = q;
+    document.getElementById('miasto-input').value = miasto;
+    document.getElementById('data-input').value   = data;
+
+    runSearch(q, miasto, data);
+});
+
+function doSearch() {
+    const q      = document.getElementById('q-input').value.trim();
+    const miasto = document.getElementById('miasto-input').value;
+    const data   = document.getElementById('data-input').value;
+
+    const params = new URLSearchParams();
+    if (q)      params.append('q', q);
+    if (miasto) params.append('miasto', miasto);
+    if (data)   params.append('data', data);
+
+    // zaktualizuj URL bez przeładowania
+    history.replaceState(null, '', 'wyniki.html?' + params.toString());
+    runSearch(q, miasto, data);
+}
+
+async function runSearch(q, miasto, data) {
+    document.getElementById('results-container').innerHTML =
+        '<div class="state-box"><div class="spinner"></div><p>Wyszukuję koncerty…</p></div>';
+    document.getElementById('results-count').textContent = '';
+
+    // opis filtrów w hero
+    const parts = [];
+    if (q)      parts.push('"' + q + '"');
+    if (miasto) parts.push(miasto);
+    if (data)   parts.push(new Date(data).toLocaleDateString('pl-PL', {day:'2-digit',month:'long',year:'numeric'}));
+    document.getElementById('hero-sub').textContent = parts.length ? parts.join(' · ') : 'Wszystkie koncerty';
+
+    const urlParams = new URLSearchParams();
+    if (q)      urlParams.append('q', q);
+    if (miasto) urlParams.append('miasto', miasto);
+    if (data)   urlParams.append('data', data);
+
+    try {
+        const res  = await fetch('szukaj.php?' + urlParams.toString());
+        const json = await res.json();
+        renderResults(json);
+    } catch {
+        document.getElementById('results-container').innerHTML =
+            '<div class="state-box"><span class="icon">⚠️</span><p>Błąd połączenia z serwerem.</p></div>';
+    }
+}
+
+function renderResults(json) {
+    const container = document.getElementById('results-container');
+    const countEl   = document.getElementById('results-count');
+
+    if (!json.success) {
+        countEl.textContent = '';
+        container.innerHTML = '<div class="state-box"><span class="icon">⚠️</span><p>Błąd serwera.</p></div>';
+        return;
+    }
+
+    const wyniki = json.wyniki || [];
+    const n = wyniki.length;
+    countEl.textContent = n + ' wynik' + (n === 1 ? '' : n < 5 ? 'i' : 'ów');
+
+    if (n === 0) {
+        container.innerHTML = `
+            <div class="state-box">
+                <span class="icon">🎸</span>
+                <p>Nie znaleziono koncertów pasujących do kryteriów.<br>
+                <strong>Spróbuj innych słów kluczowych lub zmień miasto.</strong></p>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = '<div class="results-grid">' +
+        wyniki.map(ev => {
+            const img  = ev.plakat_url || fallback;
+            const dt   = new Date(ev.data_czas);
+            const date = dt.toLocaleDateString('pl-PL', {day:'2-digit', month:'long', year:'numeric'});
+            const time = dt.toLocaleTimeString('pl-PL', {hour:'2-digit', minute:'2-digit'});
+            return `
+            <a class="result-card" href="koncert.html?id=${ev.id}">
+                <div class="card-img-wrap">
+                    <img class="card-img" src="${img}" alt="${ev.artysta}"
+                         onerror="this.src='${fallback}'">
+                </div>
+                <div class="card-body">
+                    <div class="card-genre">${ev.gatunek}</div>
+                    <div class="card-title">${ev.koncert}</div>
+                    <div class="card-meta">
+                        <span>📍 ${ev.miasto}</span>
+                        <span>📅 ${date}, ${time}</span>
+                    </div>
+                    <div class="card-price">od ${Math.round(ev.cena_stojace)} zł<small>/ os.</small></div>
+                </div>
+            </a>`;
+        }).join('') + '</div>';
+}
+</script>
+</body>
+</html>

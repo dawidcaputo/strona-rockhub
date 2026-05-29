@@ -534,7 +534,7 @@ function kartaHTML(e) {
     const data = dt.toLocaleDateString('pl-PL', { day:'numeric', month:'long', year:'numeric' });
     const czas = dt.toLocaleTimeString('pl-PL', { hour:'2-digit', minute:'2-digit' });
     const cena = Math.min(Number(e.cena_stojace), Number(e.cena_siedzace));
-    const img  = e.plakat_url || './assets/photos/slipknot.webp';
+    const img  = e.plakat_url || './assets/photos/zdj1.webp';
  
     return `
     <a class="event-card" href="koncert.html?id=${e.id}">

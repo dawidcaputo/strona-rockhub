@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/css.css">
+    <script src="script.js"></script>
+    <title>Rockhub</title>
+    <link rel="icon" type="image/svg+xml" href="fav icon.svg">
+</head>
+<body>
+    <svg style="display:none">
+        <symbol id="rh-icon" viewBox="0 0 625 625">
+            <!-- tutaj wklej ścieżki z pliku SVG -->
+            <g transform="translate(0,625) scale(0.1,-0.1)">
+                <path d="M3120 4371 l-335 -589 -120 -6 c-66 -3 -277 -13 -470 -21 -192 -9
+      -384 -20 -425 -26 -106 -14 -188 -55 -263 -131 -65 -66 -860 -1060 -865 -1082
+      -2 -10 472 -1179 495 -1221 6 -11 30 -3 113 38 58 29 132 70 165 92 88 58 224
+      193 312 309 129 169 200 251 255 294 49 37 756 422 776 422 5 0 175 -94 378
+      -210 l369 -209 16 27 c9 15 285 517 614 1116 455 831 594 1091 583 1097 -46
+      30 -1247 689 -1254 689 -5 0 -160 -265 -344 -589z"/>
+                <path d="M4680 4719 c-107 -60 -196 -113 -198 -118 -1 -4 105 -72 238 -151
+      132 -78 240 -146 240 -151 0 -5 -193 -369 -429 -809 -236 -440 -428 -800 -427
+      -800 2 0 546 316 1348 783 87 51 158 95 158 99 0 13 -715 1251 -725 1254 -5 1
+      -98 -47 -205 -107z"/>
+            </g>
+        </symbol>
+    </svg>
+    <nav>
+        <div href="#" class="nav-logo">
+            <svg width="64" height="64" fill="#FFFFFF">
+                <use href="#rh-icon"/>
+            </svg>
+            <span>RockHub</span>
+        </div>
+        <input type="checkbox" id="log">
+        <label for="log" class="log-btn">Logowanie</label>
+        <div class="logowanie">
+            <div class="container">
+                <label class="close-btn" for="log"></label>
+    
+                <!-- Zakładki -->
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="switchTab('login', this)">Logowanie</button>
+                    <button class="tab-btn"        onclick="switchTab('register', this)">Rejestracja</button>
+                </div>
+    
+                <!-- Formularz logowania -->
+                <form class="auth-form active" id="form-login">
+                    <div class="field">
+                        <label>Email</label>
+                        <input type="email" placeholder="twoj@email.com" required>
+                    </div>
+                    <div class="field">
+                        <label>Hasło</label>
+                        <input type="password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Zaloguj się</button>
+                    <div class="switch-link">
+                        Nie masz konta? <span onclick="switchTab('register', null)">Zarejestruj się</span>
+                    </div>
+                </form>
+    
+                <!-- Formularz rejestracji -->
+                <form class="auth-form" id="form-register">
+                    <div class="field">
+                        <label>Imię</label>
+                        <input type="text" placeholder="Jan Kowalski" required>
+                    </div>
+                    <div class="field">
+                        <label>Email</label>
+                        <input type="email" placeholder="twoj@email.com" required>
+                    </div>
+                    <div class="field">
+                        <label>Hasło</label>
+                        <input type="password" placeholder="••••••••" required>
+                    </div>
+                    <div class="field">
+                        <label>Powtórz hasło</label>
+                        <input type="password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Zarejestruj się</button>
+                    <div class="switch-link">
+                        Masz już konto? <span onclick="switchTab('login', null)">Zaloguj się</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <section id="s1">
+            <div id="searchbar">
+                <form action="wyniki.html" method="GET">
+                    <input  type="search"  name="q"      placeholder="Czego szukasz?" id="search">
+                    <select name="miasto" id="miasto">
+                        <option value="">Miasto</option>
+                        <option>Kraków</option>
+                        <option>Warszawa</option>
+                        <option>Wrocław</option>
+                        <option>Łódź</option>
+                        <option>Gdańsk</option>
+                    </select>
+                    <input  type="date"    name="data"   id="data">
+                    <button type="submit"  id="submit">Szukaj</button>
+                </form>
+            </div>
+        </section>
+        <section id="s2">
+            <h3 id="prop">Proponowane</h3>
+            <hr id="hr1">
+            <div class="carousel">
+                <div class="car">
+                    <img src="./assets/photos/slipknot.webp">
+                </div>
+                <div class="car">
+                    <img src="./assets/photos/korn.webp">
+                </div>
+                <div class="car">
+                    <img src="./assets/photos/guns.webp">
+                </div>
+                <div class="car">
+                    <img src="./assets/photos/bmth.webp">
+                </div>
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+        </section>
+        <section id="s3">
+            <h1 id="gatunki">Gatunki muzyczne</h1>
+            <div id="s3div">
+                <button id="gen">rock</button> <button id="gen">punk</button> <button id="gen">nu metal</button> <button id="gen">pop punk</button>
+                <button id="gen2">metalcore</button> <button id="gen2">deathcore</button><button id="gen2">hardcore</button> <button id="gen2">post-hardcore</button>
+            </div>
+        </section>
+        <section id="s4">
+            <hr style="margin-top: 200px; width: 80%; height: 5px; margin-left: 200px; background-color: #FFFFFF;">
+            <h3 id="prop">Inne koncerty które mogą ci się też spodobać</h3>
+            <div id="galeria">
+                <div class="scroll">
+                    <div class="grid">
+                        <div id="miejsce">
+                            <img data-src="./assets/photos/zdj1.webp" class="zdj" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                            <div class="overlay"></div>
+                            <div class="label">
+                                <span class="gatunek">metalcore</span>
+                                <span class="cena">100zł</span>
+                            </div>
+                        </div>
+                        <div id="miejsce">
+                            <img data-src="./assets/photos/zdj2.webp" class="zdj" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                            <div class="overlay"></div>
+                            <div class="label">
+                                <span class="gatunek">metalcore</span>
+                                <span class="cena">100zł</span>
+                            </div>
+                        </div>
+                        <div id="miejsce">
+                            <img data-src="./assets/photos/zdj3.webp" class="zdj" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                            <div class="overlay"></div>
+                            <div class="label">
+                                <span class="gatunek">metalcore</span>
+                                <span class="cena">100zł</span>
+                            </div>
+                        </div>
+                        <div id="miejsce">
+                            <img data-src="./assets/photos/zdj4.webp" class="zdj" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                            <div class="overlay"></div>
+                            <div class="label">
+                                <span class="gatunek">metalcore</span>
+                                <span class="cena">100zł</span>
+                            </div>
+                        </div>
+                        <div id="miejsce">
+                            <img data-src="./assets/photos/zdj5.webp" class="zdj" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                            <div class="overlay"></div>
+                            <div class="label">
+                                <span class="gatunek">metalcore</span>
+                                <span class="cena">100zł</span>
+                            </div>
+                        </div>
+                        <div id="miejsce">
+                            <img data-src="./assets/photos/zdj6.webp" class="zdj" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                            <div class="overlay"></div>
+                            <div class="label">
+                                <span class="gatunek">metalcore</span>
+                                <span class="cena">100zł</span>
+                            </div>
+                        </div>
+                        <div id="miejsce">
+                            <img data-src="./assets/photos/zdj7.webp" class="zdj" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                            <div class="overlay"></div>
+                            <div class="label">
+                                <span class="gatunek">metalcore</span>
+                                <span class="cena">100zł</span>
+                            </div>
+                        </div>
+                        <div id="miejsce">
+                            <img data-src="./assets/photos/zdj8.webp" class="zdj" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                            <div class="overlay"></div>
+                            <div class="label">
+                                <span class="gatunek">metalcore</span>
+                                <span class="cena">100zł</span>
+                            </div>
+                        </div>
+                        <div id="miejsce">
+                            <img data-src="./assets/photos/zdj9.webp" class="zdj" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+                            <div class="overlay"></div>
+                            <div class="label">
+                                <span class="gatunek">metalcore</span>
+                                <span class="cena">100zł</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>                    
+            </div>
+        </section>
+    </main>
+    <footer>
+         <div class="footer-col footer-col-1">
+            <div class="footer-logo">
+            <svg width="48" height="48" fill="#FFFFFF   ">
+            <use href="#rh-icon"/>
+        </svg>
+        <span>RockHub</span>
+        </div>
+            <blockquote class="cytat">
+                „Twoje bilety. Twoja muzyka. Znajdź i kup bilety na koncerty w pobliżu – w kilka sekund."
+            </blockquote>
+            <p class="credits">ROCKHUB • ticketstobbhell • bbhell • Jakub Just • Dawid Eisen</p>
+        </div>
+        <div class="footer-col">
+            <p class="kontakttit">Social media:</p>
+            <a href="#" class="social">
+            <div class="icon-circle ic-ig">🎞</div>
+            RockHub
+            </a>
+            <a href="#" class="social">
+            <div class="icon-circle ic-fb">f</div>
+            RockHubKoncerty
+            </a>
+            <a href="#" class="social">
+            <div class="icon-circle ic-tt">♪</div>
+            RockHub
+            </a>
+        </div>
+        <div class="footer-col">
+            <p class="kontakttit">Kontakt :</p>
+            <div class="kontakt">
+                <div class="telefon">📞</div>
+                676991168
+            </div>
+            <div class="kontakt">
+                <div class="mail">✉</div>
+                RockHuB@gmail.com
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

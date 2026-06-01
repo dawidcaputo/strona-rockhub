@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyniki – RockHub</title>
+    <link rel="icon" type="image/svg+xml" href="fav_icon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/css.css">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; color: #fff; font-family: 'Inter', sans-serif; min-height: 100vh; }
+ 
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 340px;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+        .hero-img {
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: center 40%;
+            filter: brightness(0.35);
+        }
+        .hero-gradient {
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, transparent 20%, #0a0a0a 100%);
+        }
+        .hero-content {
+            position: absolute; bottom: 40px; left: 0; right: 0;
+            text-align: center;
+        }
+        .hero-eyebrow {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #e63946;
+            margin-bottom: 12px;
+        }
+        .hero-title {
+            font-family: 'Limelight', cursive;
+            font-size: clamp(22px, 3.5vw, 48px);
+            letter-spacing: 3px;
+            text-shadow: 0 4px 24px rgba(0,0,0,0.8);
+        }
+ 
+        /* ── PASEK WYSZUKIWANIA ── */
+        .search-bar-wrap {
+            max-width: 1100px;
+            margin: -28px auto 60px;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+        }
+        .search-bar {
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 20px 24px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.6);
+        }
+        .search-bar input,
+        .search-bar select {
+            background: #111;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            padding: 12px 16px;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+        }
+        .search-bar input:focus,
+        .search-bar select:focus { border-color: #e63946; }
+        .search-bar input[type="search"] { flex: 2; min-width: 180px; }
+        .search-bar select { flex: 1; min-width: 140px; }
+        .search-bar input[type="date"] { flex: 1; min-width: 160px; color: #fff; }
+        .search-bar button {
+            background: #e63946;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s, transform 0.15s;
+            white-space: nowrap;
+        }
+        .search-bar button:hover { background: #c1121f; }
+        .search-bar button:active { transform: scale(0.98); }
+ 
+        /* ── SEKCJA WYNIKÓW ── */
+        .wyniki-section {
+            max-width: 1100px;
+            margin: 0 auto 100px;
+            padding: 0 40px;
+        }
+        .wyniki-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 10px;
+        }
+        .section-sub {
+            color: #555;
+            font-size: 11px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .wyniki-tytul {
+            font-family: 'Limelight', cursive;
+            font-size: 32px;
+            letter-spacing: 1px;
+        }
+        .wyniki-count {
+            font-size: 13px;
+            color: #555;
+            letter-spacing: 1px;
+        }
+        .wyniki-hr {
+            height: 1px;
+            background: rgba(255,255,255,0.07);
+            margin-bottom: 40px;
+        }
+ 
+        /* ── KARTY ── */
+        .wyniki-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 28px;
+        }
+        .event-card {
+            background: #141414;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+        }
+        .event-card:hover {
+            border-color: rgba(230,57,70,0.5);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(230,57,70,0.15);
+        }
+        .event-card-img {
+            position: relative;
+            height: 210px;
+            overflow: hidden;
+        }
+        .event-card-img img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.75);
+            transition: transform 0.45s ease, filter 0.45s ease;
+            display: block;
+        }
+        .event-card:hover .event-card-img img {
+            transform: scale(1.07);
+            filter: brightness(0.95);
+        }
+        .event-card-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 55%);
+        }
+        .event-gatunek-tag {
+            position: absolute;
+            top: 14px; left: 14px;
+            background: rgba(230,57,70,0.9);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+        .event-card-body {
+            padding: 24px 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .event-card-body h3 {
+            font-family: 'Limelight', cursive;
+            font-size: 19px;
+            margin-bottom: 14px;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+        }
+        .event-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+        .event-meta-row {
+            font-size: 13px;
+            color: #777;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .event-meta-row b { color: #bbb; font-weight: 600; }
+        .event-meta-dot {
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: #e63946;
+            flex-shrink: 0;
+        }
+        .event-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 18px;
+            margin-top: auto;
+        }
+        .event-cena {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .event-cena small {
+            font-size: 12px;
+            color: #555;
+            font-weight: 400;
+            margin-left: 3px;
+        }
+        .event-cena-od {
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #e63946;
+            margin-bottom: 2px;
+        }
+        .event-btn {
+            background: #e63946;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .event-btn:hover { background: #c1121f; }
+ 
+        /* ── STANY ── */
+        .state-box {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            color: #333;
+        }
+        .state-ico { font-size: 52px; margin-bottom: 20px; }
+        .state-box p { font-size: 16px; color: #555; }
+        .state-box .state-sub { font-size: 13px; color: #333; margin-top: 8px; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid #222;
+            border-top-color: #e63946;
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+ 
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid #333;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            width: 100%;
+            background: #2D2D2D;
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+        .footer-col {
+            padding: 28px;
+            border-right: 1px solid #333;
+        }
+        .footer-col:last-child { border-right: none; }
+        .footer-col-1 {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .cytat {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.55;
+            padding-left: 16px;
+            border-left: 3px solid #555;
+            margin: 0 0 24px;
+        }
+        .credits { font-size: 12px; color: #888; }
+        .kontakttit { font-size: 15px; color: #ccc; margin: 0 0 16px; }
+        .social {
+            display: flex; align-items: center; gap: 12px;
+            padding: 8px 0; color: #ddd; font-size: 14px; text-decoration: none;
+        }
+        .social:hover { color: #fff; }
+        .icon-circle {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .ic-ig { background: linear-gradient(135deg, #f09433, #dc2743, #bc1888); }
+        .ic-fb { background: #1877f2; color: #fff; }
+        .ic-tt { background: #000; border: 1px solid #333; }
+        .kontakt {
+            display: flex; align-items: center; gap: 12px;
+            padding: 8px 0; color: #ddd; font-size: 14px;
+        }
+        .telefon, .mail {
+            background: #c0392b; border-radius: 8px;
+            width: 34px; height: 34px;
+            display: flex; align-items: center; justify-content: center; color: #fff;
+        }
+    </style>
+</head>
+<body>
+ 
+<!-- SVG symbol -->
+<svg style="display:none">
+    <symbol id="rh-icon" viewBox="0 0 625 625">
+        <g transform="translate(0,625) scale(0.1,-0.1)">
+            <path d="M3120 4371 l-335 -589 -120 -6 c-66 -3 -277 -13 -470 -21 -192 -9 -384 -20 -425 -26 -106 -14 -188 -55 -263 -131 -65 -66 -860 -1060 -865 -1082 -2 -10 472 -1179 495 -1221 6 -11 30 -3 113 38 58 29 132 70 165 92 88 58 224 193 312 309 129 169 200 251 255 294 49 37 756 422 776 422 5 0 175 -94 378 -210 l369 -209 16 27 c9 15 285 517 614 1116 455 831 594 1091 583 1097 -46 30 -1247 689 -1254 689 -5 0 -160 -265 -344 -589z"/>
+            <path d="M4680 4719 c-107 -60 -196 -113 -198 -118 -1 -4 105 -72 238 -151 132 -78 240 -146 240 -151 0 -5 -193 -369 -429 -809 -236 -440 -428 -800 -427 -800 2 0 546 316 1348 783 87 51 158 95 158 99 0 13 -715 1251 -725 1254 -5 1 -98 -47 -205 -107z"/>
+        </g>
+    </symbol>
+</svg>
+ 
+<!-- ── NAVBAR (identyczny jak projekt.html) ── -->
+<nav>
+    <div class="nav-logo">
+        <svg width="64" height="64" fill="#FFFFFF"><use href="#rh-icon"/></svg>
+        <span>RockHub</span>
+    </div>
+    <input type="checkbox" id="log">
+    <label for="log" class="log-btn">Logowanie</label>
+    <div class="logowanie">
+        <div class="container">
+            <label class="close-btn" for="log"></label>
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="switchTab('login', this)">Logowanie</button>
+                <button class="tab-btn" onclick="switchTab('register', this)">Rejestracja</button>
+            </div>
+            <form class="auth-form active" id="form-login">
+                <div class="field"><label>Email</label><input type="email" placeholder="twoj@email.com" required></div>
+                <div class="field"><label>Hasło</label><input type="password" placeholder="••••••••" required></div>
+                <button type="submit" class="submit-btn">Zaloguj się</button>
+                <div class="switch-link">Nie masz konta? <span onclick="switchTab('register', null)">Zarejestruj się</span></div>
+            </form>
+            <form class="auth-form" id="form-register">
+                <div class="field"><label>Imię</label><input type="text" placeholder="Jan Kowalski" required></div>
+                <div class="field"><label>Email</label><input type="email" placeholder="twoj@email.com" required></div>
+                <div class="field"><label>Hasło</label><input type="password" placeholder="••••••••" required></div>
+                <div class="field"><label>Powtórz hasło</label><input type="password" placeholder="••••••••" required></div>
+                <button type="submit" class="submit-btn">Zarejestruj się</button>
+                <div class="switch-link">Masz już konto? <span onclick="switchTab('login', null)">Zaloguj się</span></div>
+            </form>
+        </div>
+    </div>
+</nav>
+ 
+<!-- ── HERO ── -->
+<section class="hero">
+    <img class="hero-img" src="./assets/photos/zdj2.webp" alt="Wyniki">
+    <div class="hero-gradient"></div>
+    <div class="hero-content">
+        <p class="hero-eyebrow">Wyniki wyszukiwania</p>
+        <h1 class="hero-title" id="heroTitle">Koncerty</h1>
+    </div>
+</section>
+ 
+<!-- ── PASEK WYSZUKIWANIA ── -->
+<div class="search-bar-wrap">
+    <div class="search-bar">
+        <input type="search" id="s-query" placeholder="Czego szukasz?">
+        <select id="s-miasto">
+            <option value="">Wszystkie miasta</option>
+            <option>Kraków</option>
+            <option>Warszawa</option>
+            <option>Wrocław</option>
+            <option>Łódź</option>
+            <option>Gdańsk</option>
+        </select>
+        <input type="date" id="s-data">
+        <button onclick="szukaj()">Szukaj</button>
+    </div>
+</div>
+ 
+<!-- ── WYNIKI ── -->
+<section class="wyniki-section">
+    <div class="wyniki-header">
+        <div>
+            <p class="section-sub">Znalezione koncerty</p>
+            <h2 class="wyniki-tytul" id="wyniki-tytul">Wszystkie koncerty</h2>
+        </div>
+        <span class="wyniki-count" id="wyniki-count"></span>
+    </div>
+    <div class="wyniki-hr"></div>
+    <div class="wyniki-grid" id="wyniki-grid">
+        <div class="state-box">
+            <div class="spinner"></div>
+            <p>Wczytywanie wyników…</p>
+        </div>
+    </div>
+</section>
+ 
+<!-- ── FOOTER (identyczny jak projekt.html) ── -->
+<footer>
+    <div class="footer-col footer-col-1">
+        <div>
+            <div class="footer-logo">
+                <svg width="40" height="40" fill="#FFFFFF"><use href="#rh-icon"/></svg>
+                <span>RockHub</span>
+            </div>
+            <blockquote class="cytat">
+                „Twoje bilety. Twoja muzyka. Znajdź i kup bilety na koncerty w pobliżu – w kilka sekund."
+            </blockquote>
+        </div>
+        <p class="credits">ROCKHUB • ticketstobbhell • bbhell • Jakub Just • Dawid Eisen</p>
+    </div>
+    <div class="footer-col">
+        <p class="kontakttit">Social media:</p>
+        <a href="#" class="social"><div class="icon-circle ic-ig">🎞</div>RockHub</a>
+        <a href="#" class="social"><div class="icon-circle ic-fb">f</div>RockHubKoncerty</a>
+        <a href="#" class="social"><div class="icon-circle ic-tt">♪</div>RockHub</a>
+    </div>
+    <div class="footer-col">
+        <p class="kontakttit">Kontakt :</p>
+        <div class="kontakt"><div class="telefon">📞</div>676991168</div>
+        <div class="kontakt"><div class="mail">✉</div>RockHuB@gmail.com</div>
+    </div>
+</footer>
+ 
+<script src="script.js"></script>
+<script>
+// ── odczyt parametrów z URL ──
+const params = new URLSearchParams(window.location.search);
+const qVal   = params.get('q')      || '';
+const mVal   = params.get('miasto') || '';
+const dVal   = params.get('data')   || '';
+ 
+// wypełnij pasek
+document.getElementById('s-query').value  = qVal;
+document.getElementById('s-miasto').value = mVal;
+document.getElementById('s-data').value   = dVal;
+ 
+// nagłówek hero
+const heroTitle   = document.getElementById('heroTitle');
+const wynikiTytul = document.getElementById('wyniki-tytul');
+if (qVal) {
+    heroTitle.textContent   = `„${qVal}"`;
+    wynikiTytul.textContent = `Wyniki dla: „${qVal}"`;
+} else if (mVal) {
+    heroTitle.textContent   = mVal;
+    wynikiTytul.textContent = `Koncerty w: ${mVal}`;
+} else {
+    heroTitle.textContent   = 'Wszystkie koncerty';
+}
+ 
+// ── pobierz wyniki z szukaj.php ──
+async function pobierzWyniki() {
+    const grid = document.getElementById('wyniki-grid');
+    try {
+        const url = new URL('szukaj.php', window.location.href);
+        if (qVal) url.searchParams.set('q',      qVal);
+        if (mVal) url.searchParams.set('miasto', mVal);
+        if (dVal) url.searchParams.set('data',   dVal);
+ 
+        const res  = await fetch(url);
+        const data = await res.json();
+ 
+        if (!data.success || !data.events || data.events.length === 0) {
+            grid.innerHTML = `
+                <div class="state-box">
+                    <div class="state-ico">🎸</div>
+                    <p>Nie znaleziono żadnych koncertów.</p>
+                    <p class="state-sub">Spróbuj zmienić kryteria wyszukiwania.</p>
+                </div>`;
+            document.getElementById('wyniki-count').textContent = 'Brak wyników';
+            return;
+        }
+ 
+        const n = data.events.length;
+        const suffix = n === 1 ? 'koncert' : n < 5 ? 'koncerty' : 'koncertów';
+        document.getElementById('wyniki-count').textContent = `${n} ${suffix}`;
+        grid.innerHTML = data.events.map(kartaHTML).join('');
+ 
+    } catch (err) {
+        grid.innerHTML = `
+            <div class="state-box">
+                <div class="state-ico">⚠️</div>
+                <p>Błąd połączenia z serwerem.</p>
+                <p class="state-sub">${err.message}</p>
+            </div>`;
+    }
+}
+ 
+function kartaHTML(e) {
+    const dt   = new Date(e.data_czas);
+    const data = dt.toLocaleDateString('pl-PL', { day:'numeric', month:'long', year:'numeric' });
+    const czas = dt.toLocaleTimeString('pl-PL', { hour:'2-digit', minute:'2-digit' });
+    const cena = Math.min(Number(e.cena_stojace), Number(e.cena_siedzace));
+    const img  = e.plakat_url || './assets/photos/zdj1.webp';
+ 
+    return `
+    <a class="event-card" href="koncert.html?id=${e.id}">
+        <div class="event-card-img">
+            <img src="${img}" alt="${e.koncert}" loading="lazy">
+            <div class="event-card-overlay"></div>
+            <span class="event-gatunek-tag">${e.gatunek || 'koncert'}</span>
+        </div>
+        <div class="event-card-body">
+            <h3>${e.koncert}</h3>
+            <div class="event-meta">
+                <div class="event-meta-row">
+                    <div class="event-meta-dot"></div>
+                    <b>${e.artysta}</b>
+                </div>
+                <div class="event-meta-row">
+                    <div class="event-meta-dot"></div>
+                    <span>${e.miejsce}, <b>${e.miasto}</b></span>
+                </div>
+                <div class="event-meta-row">
+                    <div class="event-meta-dot"></div>
+                    <span>${data}, <b>${czas}</b></span>
+                </div>
+            </div>
+            <div class="event-card-footer">
+                <div>
+                    <div class="event-cena-od">od</div>
+                    <div class="event-cena">${cena} zł <small>/ os.</small></div>
+                </div>
+                <span class="event-btn">Kup bilet →</span>
+            </div>
+        </div>
+    </a>`;
+}
+ 
+// ── nowe wyszukiwanie ──
+function szukaj() {
+    const q      = document.getElementById('s-query').value.trim();
+    const miasto = document.getElementById('s-miasto').value;
+    const data   = document.getElementById('s-data').value;
+    const url    = new URL('wyniki.html', window.location.href);
+    if (q)      url.searchParams.set('q',      q);
+    if (miasto) url.searchParams.set('miasto', miasto);
+    if (data)   url.searchParams.set('data',   data);
+    window.location.href = url.toString();
+}
+ 
+document.getElementById('s-query').addEventListener('keydown', e => {
+    if (e.key === 'Enter') szukaj();
+});
+ 
+pobierzWyniki();
+</script>
+</body>
+</html>
